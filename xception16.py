@@ -1,24 +1,23 @@
-
-
 from glob import glob
 import matplotlib.pyplot as plt
 
+from keras.applications import VGG16
+
+from keras import models
+from keras import layers
+from keras import optimizers
+
 # variables
-path_to_images = '/content/gdrive/My Drive/TFM/TODO_TIFF'
+path_to_images = 'PATH'
 batch_size = 32
 class_indices = {'red': 0, 'green': 1, 'black': 2}
 
 image_files = glob(path_to_images + "/*.tiff")
-print(image_files)
 
-
-from keras.applications import VGG16
 conv_base = VGG16(weights=None,
 include_top=False,
 input_shape=(128, 128, 37))
 
-from keras import models
-from keras import layers
 model = models.Sequential()
 model.add(conv_base)
 model.add(layers.Flatten())
@@ -28,10 +27,6 @@ model.add(layers.Dropout(0.5))
 model.add(layers.Dense(3, activation='softmax'))
 
 model.summary()
-
-from keras import models
-from keras import layers
-from keras import optimizers
 
 model.compile(optimizer='adam',
 loss='categorical_crossentropy',
@@ -90,7 +85,7 @@ history = model.fit(train_generator,
                     validation_steps=5)
 
 
-model.save('VGG16_augmentator_IR+VISI_50epoch_categorical_accuracy.h5')
+model.save('VGG16_model.h5')
 
 import matplotlib.pyplot as plt
 loss = history.history['loss']
@@ -102,7 +97,7 @@ plt.title('Training and validation loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.show()
+plt.savefig('loss_vs_epochs.png')
 
 plt.clf()
 acc = history.history['acc']
@@ -113,24 +108,9 @@ plt.title('Training and validation accuracy')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.show()
+plt.savefig('acc_vs_epochs.png')
 
-plt.clf()
-acc = history.history['mse']
-val_acc = history.history['val_mse']
-plt.plot(epochs, acc, 'bo', label='Training mse')
-plt.plot(epochs, val_acc, 'b', label='Validation mse')
-plt.title('Training and validation MSE')
-plt.xlabel('Epochs')
-plt.ylabel('MSE')
-plt.legend()
-plt.show()
-
-test_data
-
-import keras
-
-model = keras.models.load_model('/content/gdrive/My Drive/TFM/VGG16_augmentator_IR+VISI_50epoch.h5')
+model = keras.models.load_model('VGG16_model.h5')
 
 test_generator = hyperspectral_image_generator(test_data, class_indices,
                                                 batch_size=32,
