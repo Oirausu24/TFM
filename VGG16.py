@@ -34,12 +34,27 @@ metrics=['acc','mse'])
 
 
 import random
-random.seed(30)
-random.shuffle(image_files)
 
-train_data = image_files[:367]
-validation_data = image_files[367:489]
-test_data = image_files[489:]
+green = image_files[:len(image_files)//3]
+red = image_files[204:408]
+black = image_files[408:]
+
+random.seed(12)
+random.shuffle(green)
+random.shuffle(red)
+random.shuffle(black)
+
+train_data = green[:123]+red[:123]+black[:123]
+validation_data = green[123:164]+red[123:164]+black[123:164]
+test_data = green[163:]+red[163:]+black[163:]
+
+test_train_data = green[:123]+red[:123]+black[:123]+green[163:]+red[163:]+black[163:]
+
+random.seed(13)
+random.shuffle(train_data)
+random.shuffle(validation_data)
+random.shuffle(test_data)
+random.shuffle(test_train_data)
 
 no_augmentation_parameters = {'flip': False,
                             'zoom': 1.0,
